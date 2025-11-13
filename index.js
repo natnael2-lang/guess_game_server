@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173", 
+    origin: "https://natnael2-lang.github.io/guess_game/", 
     credentials: true,
     exposedHeaders: ["Authorization"] 
   })
