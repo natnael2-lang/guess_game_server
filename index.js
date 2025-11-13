@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "https://natnael2-lang.github.io/guess_game/", 
+    origin: "https://guess-game-kappa-plum.vercel.app/", 
     credentials: true,
     exposedHeaders: ["Authorization"] 
   })
