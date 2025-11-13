@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "https://guess-game-kappa-plum.vercel.app/", 
+    origin: "https://guess-game-kappa-plum.vercel.app", 
     credentials: true,
     exposedHeaders: ["Authorization"] 
   })
