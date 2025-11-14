@@ -44,7 +44,7 @@ exports.signUp = async (req, res) => {
 
   
     await resend.emails.send({
-      from:"natnaelmessay71@gmail.com",
+      from: "Guess Game <onboarding@resend.dev>",
       to: email,
       subject: "Verify your Guess Game account",
       html: `
