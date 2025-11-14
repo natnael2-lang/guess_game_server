@@ -4,6 +4,8 @@ const User = require("../models/user");
 const crypto = require("crypto");
 const transporter = require("../email");
 
+const { Resend } = require("resend");
+const resend = new Resend("re_TDsJjwRx_CKQ5ELb7gSh7Nb4NP4ojkcx4");
 
 const generateAccessToken = (user) =>
   jwt.sign({ id: user._id }, process.env.JWT_ACCESS_SECRET, { expiresIn: "3m" });
@@ -12,9 +14,10 @@ const generateRefreshToken = (user) =>
   jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
 
 
+
 exports.signUp = async (req, res) => {
   try {
-    console.log("in signup")
+    console.log("in signup");
     const { username, email, password } = req.body;
 
     if (!username || !email || !password)
@@ -27,7 +30,7 @@ exports.signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    const verificationTokenExpires = Date.now() + 1000 * 60 * 15; // 15 minutes
+    const verificationTokenExpires = Date.now() + 1000 * 60 * 15;
 
     const user = await User.create({
       username,
@@ -39,8 +42,9 @@ exports.signUp = async (req, res) => {
 
     const verifyURL = `https://guess-game-server.onrender.com/verify/${verificationToken}`;
 
-    await transporter.sendMail({
-      from: "natnaelmessay71@gmail.com",
+  
+    await resend.emails.send({
+      from:"natnaelmessay71@gmail.com",
       to: email,
       subject: "Verify your Guess Game account",
       html: `
@@ -59,7 +63,6 @@ exports.signUp = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 exports.login = async (req, res) => {
   try {
@@ -168,5 +171,8 @@ exports.verifyEmail = async (req, res) => {
     res.send("Email verified successfully! You can now log in.");
   } catch (err) {
     res.status(500).send("Server error");
-  }
+  }n
 };
+
+
+
