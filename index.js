@@ -10,16 +10,17 @@ const scoreRouter = require("./routes/scoreRoutes");
 const app = express();
 
 
+
+
+app.use(cors({
+  origin: "https://guess-game-kappa-plum.vercel.app",
+  credentials: true,
+  exposedHeaders: ["Authorization"] 
+}));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: "https://guess-game-kappa-plum.vercel.app", 
-    credentials: true,
-    exposedHeaders: ["Authorization"] 
-  })
-);
+
 
 
 app.use("/", authRouter);

@@ -14,6 +14,7 @@ const generateRefreshToken = (user) =>
 
 exports.signUp = async (req, res) => {
   try {
+    console.log("in signup")
     const { username, email, password } = req.body;
 
     if (!username || !email || !password)
@@ -36,7 +37,7 @@ exports.signUp = async (req, res) => {
       verificationTokenExpires,
     });
 
-    const verifyURL = `https://guess-game-server.onrender.com/verify/${verificationToken}`;
+    const verifyURL = `http://localhost:5000/verify/${verificationToken}`;
 
     await transporter.sendMail({
       from: "natnaelmessay71@gmail.com",
@@ -63,13 +64,13 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password)
       return res.status(400).json({ message: "Email & password required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-    // BLOCK unverified users
     if (!user.isVerified) {
       return res.status(403).json({ message: "Please verify your email first" });
     }
@@ -77,24 +78,35 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
+    
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    res
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
-      .header("Authorization", `Bearer ${accessToken}`)
-      .json({
-        message: "Login successful",
-        user: { id: user._id, username: user.username, email: user.email },
-      });
+    console.log("Generated Access Token:", accessToken);
+
+  
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,                        
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+   
+    res.setHeader("Authorization", `Bearer ${accessToken}`);
+
+    return res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+
   } catch (err) {
     console.error("❌ Login Error:", err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 exports.refreshToken = (req, res) => {
