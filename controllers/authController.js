@@ -37,7 +37,7 @@ exports.signUp = async (req, res) => {
       verificationTokenExpires,
     });
 
-    const verifyURL = `http://localhost:5000/verify/${verificationToken}`;
+    const verifyURL = `https://guess-game-server.onrender.com/verify/${verificationToken}`;
 
     await transporter.sendMail({
       from: "natnaelmessay71@gmail.com",
@@ -88,7 +88,7 @@ exports.login = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,                        
       secure: process.env.NODE_ENV === "production" ? true : false,
-      sameSite: "lax",
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
