@@ -39,7 +39,7 @@ exports.signUp = async (req, res) => {
     const verifyURL = `https://guess-game-server.onrender.com/verify/${verificationToken}`;
 
     await transporter.sendMail({
-      from: `"Guess Game" <natnaelmessay71@gmail.com>`,
+      from: "natnaelmessay71@gmail.com",
       to: email,
       subject: "Verify your Guess Game account",
       html: `
